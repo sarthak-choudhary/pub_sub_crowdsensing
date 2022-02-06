@@ -71,4 +71,27 @@ contract UserManager is Ownable {
         uint256 user_index = UserToId[_user_address] - 1;
         return (users[user_index].total_participation, users[user_index].uncomplete_participation, users[user_index].reputation);
     }
+
+    function getUserInfo(uint256 _id) public view returns(address, uint256, uint256, uint256, uint256) {
+        require(_id <= userCounter && _id > 0);
+        return (users[_id - 1].user_address, users[_id - 1].user_address.balance, users[_id - 1].uncomplete_participation, users[_id - 1].total_participation, users[_id - 1].reputation);
+    }
+
+    function updateReputation(address _user_address, uint256 _updateTask) external returns(bool) {
+        // require(msg.sender == broker_address);
+
+        users[UserToId[_user_address] - 1].uncomplete_participation += _updateTask;
+        users[UserToId[_user_address] - 1].total_participation++;
+
+        uint256 uncomplete = users[UserToId[_user_address] - 1].uncomplete_participation;
+        uint256 total = users[UserToId[_user_address] - 1].total_participation;
+
+        if (uncomplete == 0) {
+            users[UserToId[_user_address] - 1].reputation = 1;
+        } else {
+            users[UserToId[_user_address] - 1].reputation = 100 - (uncomplete * 100)/total;
+        }
+
+        return true;
+    }
 }

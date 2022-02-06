@@ -10,6 +10,7 @@ enum TOPIC_STATUS {
 
 interface UserInterface {
     function isUser(address user_address) external view returns (bool);
+    function updateReputation(address _user_address, uint256 _updateTask) external returns(bool);
 }
 
 interface TopicDetailInterface {
@@ -20,7 +21,7 @@ interface TopicDetailInterface {
 contract Broker {
     struct TopicData {
         uint256 topic_id;
-        address TDC_address;
+        address payable TDC_address;
         string name;
         uint256 deposit;
         uint256 deadline;
@@ -113,7 +114,7 @@ contract Broker {
         topicCounter++;
         topicsList.push(TopicData({
                             topic_id: topicCounter, 
-                            TDC_address: topic_address, 
+                            TDC_address: payable(topic_address), 
                             name: details.name, 
                             deposit: details.deposit, 
                             deadline: details.deadline,
@@ -156,5 +157,12 @@ contract Broker {
 
     function getTopicId(address _topic_address) public view returns(uint256) {
         return TopicToId[_topic_address];
+    }
+
+    function updateRepo(address _user_address, uint256 _update) external returns(bool) {
+        // require(TopicToId[msg.sender] != 0, "Topic Not Registered");
+
+        UserInterface userManager = UserInterface(userManagerAddress);
+        return userManager.updateReputation(_user_address, _update);
     }
 }

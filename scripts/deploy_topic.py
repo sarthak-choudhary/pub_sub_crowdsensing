@@ -1,6 +1,6 @@
 from brownie import TopicDetail, Broker, network, config
 from scripts.deploy_broker import deploy_broker, get_topics
-from scripts.deploy_user_manager import register
+from scripts.deploy_user_manager import register, getUserInfo
 from scripts.helpful_scripts import get_account
 import time
 
@@ -28,12 +28,14 @@ def subscribe(_index=None):
     tx = topic_detail.subscribe({"from": account, "value": value})
     tx.wait(1)
     
-    # if tx.return_value:
-    #     print(f"Account f{account.address} has successfully subscribed to the given Topic")
-    # else:
-    #     print(f"Subscription request failed")
-        
-    print(f"Account f{account.address} has successfully subscribed to the given Topic")
+    # testing on localchain
+    if tx.return_value:
+        print(f"Account f{account.address} has successfully subscribed to the given Topic")
+    else:
+        print(f"Subscription request failed")
+    
+    # testing on kovan
+    # print(f"Account f{account.address} has successfully subscribed to the given Topic")
 
 
 def getNumberOfSubscribers():
@@ -55,12 +57,14 @@ def reserve(_startTime, _endTime, _index=None):
     tx = topic_detail.addReservation(_startTime, _endTime, {"from": account, "value": value})
     tx.wait(1)
     
-    # if tx.return_value:
-    #     print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
-    # else:
-    #     print(f"Reservation failed")
-        
-    print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
+    # testing on local chain
+    if tx.return_value:
+        print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
+    else:
+        print(f"Reservation failed")
+    
+    # testing on Kovan
+    # print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
 
 
 def getNumberOfReservations():
@@ -87,6 +91,22 @@ def getNumberOfPublishers():
     return result
 
 
+def getReservation(id):
+    topic_detail = TopicDetail[-1]
+    account = get_account()
+    
+    result = topic_detail.getReservation(id, {"from": account})
+    return result
+
+
+def getPublisher(id):
+    topic_detail = TopicDetail[-1]
+    account = get_account()
+    
+    result = topic_detail.getPublisher(id, {"from": account})
+    return result
+
+
 def addPublishers():
     topic_detail = TopicDetail[-1]
     account = get_account()
@@ -96,45 +116,160 @@ def addPublishers():
     
     return tx
 
+def submitData(data, _index):
+    topic_detail = TopicDetail[-1]
+    account = get_account(_index)
+    
+    tx = topic_detail.submitData(data, {"from": account})
+    tx.wait(1)
+    
+    if tx.return_value:
+        print("The data was submitted successfully")
+    else:
+        print("Data Submission failed")
+        
+
+def validate():
+    topic_detail = TopicDetail[-1]
+    account = get_account(1)
+    
+    tx = topic_detail.validateData({"from": account})
+    tx.wait(1)
+    
+    if tx.return_value:
+        print("Data is Validated Now !!!")
+    else:
+        print("Validation")
+
+
+# def main():
+#     broker = deploy_broker()
+#     register()
+#     register()
+#     # register()
+#     # register()
+    
+#     startTime = int(time.time()) + 900
+#     endTime = int(time.time()) + 1020
+    
+#     topic_detail = deploy_topic("sensing", 1000, 10, 3, 5, 1, startTime, endTime, 2, 5, 1)
+#     tx = broker.create_topic(topic_detail.address, {"from": get_account()})
+#     tx.wait(1)
+    
+#     # if tx.return_value:
+#     #     print("Topic Successfully Created")
+#     # else:
+#     #     print("No Topic Created")
+    
+#     print("Topic Successfully Created")
+        
+#     get_topics("sensing", 1000, 10, 4)
+#     print(f"The Topic Detailed Contract Address is {topic_detail.address}")
+    
+#     subscribe()
+#     print(f"Number of subscribers in the given topic are {getNumberOfSubscribers()}")
+#     print(f"Current Status of the topic is: {getStatus()}")
+    
+#     reserve(startTime, endTime)
+#     print(f"Number of reservations in the given topic are {getNumberOfReservations()}")
+    
+#     while(int(time.time()) < endTime):
+#         time.sleep(120)
+#         print(f"Status of the task: {startTime - int(time.time())}")
+    
+#     # addPublishers()
+#     print(f"Number of publishers {getNumberOfPublishers()}")
+        
+    
 def main():
     broker = deploy_broker()
-    register()
-    register()
-    # register()
-    # register()
+    
+    register(1)
+    register(2)
+    register(3)
+    register(4)
+    register(5)
+    register(6)
+    register(7)
+    register(8)
+    register(9)
+    
     
     startTime = int(time.time()) + 900
     endTime = int(time.time()) + 1020
     
-    topic_detail = deploy_topic("sensing", 1000, 10, 3, 5, 1, startTime, endTime, 2, 5, 1)
-    tx = broker.create_topic(topic_detail.address, {"from": get_account()})
+    topic_detail = deploy_topic("sensing", 1000, 10, 3, 5, 1, startTime, endTime, 16, 7, 1, 1)
+    tx = broker.create_topic(topic_detail.address, {"from": get_account(1)})
     tx.wait(1)
     
-    # if tx.return_value:
-    #     print("Topic Successfully Created")
-    # else:
-    #     print("No Topic Created")
+    if tx.return_value:
+        print("Topic Successfully Created")
+    else:
+        print("No Topic Created") 
     
-    print("Topic Successfully Created")
-        
-    get_topics("sensing", 1000, 10, 4)
     print(f"The Topic Detailed Contract Address is {topic_detail.address}")
+    get_topics("sensing", 1000, 10, 4)
     
-    subscribe()
+    subscribe(1)
+    subscribe(2)
+    subscribe(3)
+    subscribe(4)
+    
+
     print(f"Number of subscribers in the given topic are {getNumberOfSubscribers()}")
     print(f"Current Status of the topic is: {getStatus()}")
     
-    reserve(startTime, endTime)
+    reserve(startTime + 50, endTime - 50, 1)
+    reserve(startTime + 45, endTime - 45, 2)
+    reserve(startTime + 40, endTime - 40, 3)
+    reserve(startTime + 35, endTime - 35, 4)
+    reserve(startTime + 30, endTime - 30, 5)
+    reserve(startTime + 25, endTime - 25, 6)
+    reserve(startTime + 20, endTime - 20, 7)
+    reserve(startTime + 15, endTime - 15, 8)
+    reserve(startTime + 10, endTime - 10, 9)
+    
+    
     print(f"Number of reservations in the given topic are {getNumberOfReservations()}")
     
-    while(int(time.time()) < endTime):
-        time.sleep(120)
-        print(f"Status of the task: {startTime - int(time.time())}")
-    
-    # addPublishers()
-    print(f"Number of publishers {getNumberOfPublishers()}")
+    for i in range(1, 10):
+        print(getReservation(i))
         
     
+    addPublishers()
     
+    print(f"Number of publishers are {getNumberOfPublishers()}")
+    
+    for i in range(1, 8):
+        print(getPublisher(i))
+    
+        
+    data1 = [25, 50, 75, 100]
+    data2 = [26, 51, 76, 101]
+    data3 = [27, 52, 77, 102]
+    data4 = [28, 53, 78, 103]
+    data5 = [29, 54, 79, 104]
+    data6 = [30, 55, 80, 105]
+    data7 = [31, 56, 81, 106]    
+    
+    submitData(data1, 3)
+    submitData(data2, 4)
+    submitData(data3, 5)
+    submitData(data4, 6)
+    submitData(data5, 7)
+    submitData(data6, 8)
+    submitData(data7, 9)
+    
+    validate()
+    
+    for i in range(1, 8):
+        print(getPublisher(i))
+        
+        
+    print("")
+    
+    
+    for i in range(1, 10):
+        getUserInfo(i)
     
     

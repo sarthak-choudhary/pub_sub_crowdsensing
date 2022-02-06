@@ -24,10 +24,19 @@ def register(_index=None):
     tx = user_manager.register({"from": account})
     tx.wait(1)
     
-    # if tx.return_value:
-    #     print("The User is Registered.")
-    # else:
-    #     print("The User is already registered.")
+    # testing on localchain
+    if tx.return_value:
+        print("The User is Registered.")
+    else:
+        print("The User is already registered.")
+
+def getUserInfo(_id):
+    user_manager = UserManager[-1]
+    account = get_account()
+    
+    tx = user_manager.getUserInfo(_id, {"from": account})
+    
+    print(tx)
     
 def main():
     deploy_user_manager()

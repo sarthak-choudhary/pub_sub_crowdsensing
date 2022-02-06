@@ -14,6 +14,8 @@ networks:
   default: development
   kovan:
     verify: True
+  ganache-local:
+    verify: False
 
 wallets:
   from_key: ${PRIVATE_KEY}

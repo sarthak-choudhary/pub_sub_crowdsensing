@@ -17,8 +17,9 @@ def create_topic(name, deposit, deadline, periods, freq, zone, startDate, endDat
     tx = broker.create_topic(name, deposit, deadline, periods, freq, zone, startDate, endDate, simMatch, {"from": account})
     tx.wait(1)
     
-    # if (tx.return_value == False):
-    #     print("Topic couldn't be created")
+    # testing on local chain
+    if (tx.return_value == False):
+        print("Topic couldn't be created")
     
     print("New Topic created sucessful")
         
