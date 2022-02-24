@@ -1,5 +1,7 @@
 from brownie import UserManager
 from scripts.helpful_scripts import get_account
+import timeit
+import time
 
 def deploy_user_manager():
     account = get_account()
@@ -40,11 +42,25 @@ def getUserInfo(_id):
     
 def main():
     deploy_user_manager()
-    register(1)
-    register(2)
-    register(3)
+    # start_time = timeit.default_timer()
+    # register(1)
+    # print(timeit.default_timer() - start_time)
+
+    # start_time = timeit.default_timer()
+    # register(2)
+    # print(timeit.default_timer() - start_time)
     
-    register(1)
+    # start_time = timeit.default_timer()
+    # register(3)
+    # print(timeit.default_timer() - start_time)
     
+    # start_time = timeit.default_timer()
+    # register(99)
+    # print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    for i in range(0,25):
+        register(i)
+    print(timeit.default_timer() - start_time)
     
     

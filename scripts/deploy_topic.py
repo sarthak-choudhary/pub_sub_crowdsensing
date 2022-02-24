@@ -2,6 +2,7 @@ from brownie import TopicDetail, Broker, network, config
 from scripts.deploy_broker import deploy_broker, get_topics
 from scripts.deploy_user_manager import register, getUserInfo
 from scripts.helpful_scripts import get_account
+import timeit
 import time
 
 def deploy_topic(name, deposit, deadline, periods, frequency, zone, startDate, endDate, similarityMatching, numPublishers, limit, _index=None):
@@ -29,10 +30,10 @@ def subscribe(_index=None):
     tx.wait(1)
     
     # testing on localchain
-    if tx.return_value:
-        print(f"Account f{account.address} has successfully subscribed to the given Topic")
-    else:
-        print(f"Subscription request failed")
+    # if tx.return_value:
+    #     print(f"Account f{account.address} has successfully subscribed to the given Topic")
+    # else:
+    #     print(f"Subscription request failed")
     
     # testing on kovan
     # print(f"Account f{account.address} has successfully subscribed to the given Topic")
@@ -58,10 +59,10 @@ def reserve(_startTime, _endTime, _index=None):
     tx.wait(1)
     
     # testing on local chain
-    if tx.return_value:
-        print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
-    else:
-        print(f"Reservation failed")
+    # if tx.return_value:
+    #     print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
+    # else:
+    #     print(f"Reservation failed")
     
     # testing on Kovan
     # print(f"Account f{account.address} made a successful reservation in Topic: {topic_detail.address}")
@@ -184,6 +185,8 @@ def validate():
 def main():
     broker = deploy_broker()
     
+    # for i in range(1,31):
+    #     register(i)
     register(1)
     register(2)
     register(3)
@@ -198,9 +201,12 @@ def main():
     startTime = int(time.time()) + 900
     endTime = int(time.time()) + 1020
     
-    topic_detail = deploy_topic("sensing", 1000, 10, 3, 5, 1, startTime, endTime, 16, 7, 1, 1)
+    num_pub = 7
+    start_time = timeit.default_timer()
+    topic_detail = deploy_topic("sensing", 1000, 10, 3, 5, 1, startTime, endTime, 16, num_pub, 1, 1)
     tx = broker.create_topic(topic_detail.address, {"from": get_account(1)})
     tx.wait(1)
+    print(timeit.default_timer() - start_time)
     
     if tx.return_value:
         print("Topic Successfully Created")
@@ -209,25 +215,71 @@ def main():
     
     print(f"The Topic Detailed Contract Address is {topic_detail.address}")
     get_topics("sensing", 1000, 10, 4)
-    
+
+    start_time = timeit.default_timer()
     subscribe(1)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     subscribe(2)
+    print(timeit.default_timer() - start_time)
+
+    start_time = timeit.default_timer()
     subscribe(3)
+    print(timeit.default_timer() - start_time)
+
+    start_time = timeit.default_timer()
     subscribe(4)
+    print(timeit.default_timer() - start_time)
+   
+    # subscribe(2)
+    # subscribe(3)
+    # subscribe(4)
     
 
     print(f"Number of subscribers in the given topic are {getNumberOfSubscribers()}")
     print(f"Current Status of the topic is: {getStatus()}")
     
+    # start_time = timeit.default_timer()
+    # for i in range (1,31):
+    #     reserve(startTime + i, endTime - i, i)
+    # print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 50, endTime - 50, 1)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 45, endTime - 45, 2)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 40, endTime - 40, 3)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 35, endTime - 35, 4)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 30, endTime - 30, 5)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 25, endTime - 25, 6)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 20, endTime - 20, 7)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 15, endTime - 15, 8)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
     reserve(startTime + 10, endTime - 10, 9)
+    print(timeit.default_timer() - start_time)
     
     
     print(f"Number of reservations in the given topic are {getNumberOfReservations()}")
@@ -235,8 +287,9 @@ def main():
     for i in range(1, 10):
         print(getReservation(i))
         
-    
+    start_time = timeit.default_timer()
     addPublishers()
+    print(timeit.default_timer() - start_time)
     
     print(f"Number of publishers are {getNumberOfPublishers()}")
     
@@ -251,16 +304,38 @@ def main():
     data5 = [29, 54, 79, 104]
     data6 = [30, 55, 80, 105]
     data7 = [31, 56, 81, 106]    
-    
+
+    start_time = timeit.default_timer()
     submitData(data1, 3)
-    submitData(data2, 4)
-    submitData(data3, 5)
-    submitData(data4, 6)
-    submitData(data5, 7)
-    submitData(data6, 8)
-    submitData(data7, 9)
+    print(timeit.default_timer() - start_time)        
     
-    validate()
+    start_time = timeit.default_timer()
+    submitData(data2, 4)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    submitData(data3, 5)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    submitData(data4, 6)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    submitData(data5, 7)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    submitData(data6, 8)
+    print(timeit.default_timer() - start_time)
+    
+    start_time = timeit.default_timer()
+    submitData(data7, 9)
+    print(timeit.default_timer() - start_time)
+
+    start_time = timeit.default_timer()
+    validate() #No data pushed into the chain, all computational performance leads to large exec. time but less gas consumption.
+    print(timeit.default_timer() - start_time)    
     
     for i in range(1, 8):
         print(getPublisher(i))
