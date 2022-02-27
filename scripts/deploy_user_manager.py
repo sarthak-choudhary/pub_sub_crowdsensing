@@ -25,12 +25,14 @@ def register(_index=None):
     
     tx = user_manager.register({"from": account})
     tx.wait(1)
+
+    return tx.gas_used
     
     # testing on localchain
-    if tx.return_value:
-        print("The User is Registered.")
-    else:
-        print("The User is already registered.")
+    # if tx.return_value:
+    #     print("The User is Registered.")
+    # else:
+    #     print("The User is already registered.")
 
 def getUserInfo(_id):
     user_manager = UserManager[-1]
@@ -58,9 +60,16 @@ def main():
     # register(99)
     # print(timeit.default_timer() - start_time)
     
-    start_time = timeit.default_timer()
-    for i in range(0,25):
-        register(i)
-    print(timeit.default_timer() - start_time)
+    # gas_consumed = 0
+    # start_time = timeit.default_timer()
+    # for i in range(0,25):
+    #     gas_consumed += register(i)
+    # print(timeit.default_timer() - start_time)
+    # print(gas_consumed)
+    
+    # start_time = timeit.default_timer()
+    # register(0)
+    # print(timeit.default_timer() - start_time)
+
     
     
