@@ -301,9 +301,10 @@ contract TopicDetail is KeeperCompatible {
             }
         }
 
-        feedback();
-        status = TOPIC_STATUS.VALIDATED;
-        return true;
+        // feedback();
+        // status = TOPIC_STATUS.VALIDATED;
+        // return true;
+        return feedback();
     }
 
     function feedback() private returns(bool) {
@@ -336,4 +337,6 @@ contract TopicDetail is KeeperCompatible {
         BrokerInterface broker = BrokerInterface(broker_address);
         broker.updateRepo(_user_address, _update);
     }
+
+// this is a test line entered in 
 }

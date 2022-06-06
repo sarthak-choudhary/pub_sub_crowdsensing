@@ -36,7 +36,7 @@ def register(_index=None):
 
 def getUserInfo(_id):
     user_manager = UserManager[-1]
-    account = get_account()
+    account = get_account(_id - 1)
     
     tx = user_manager.getUserInfo(_id, {"from": account})
     
